@@ -1,24 +1,70 @@
-body {
-  font-family: sans-serif;
-  text-align: center;
-  background: #f0f0f0;
+/* Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Boutons */
+button {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  padding: 12px 24px;
+  margin: 8px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background-color: #2a2a2a;
+}
+
+/* Grille */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 100px);
-  gap: 5px;
-  justify-content: center;
+  gap: 8px;
   margin-top: 20px;
 }
 .grid div {
   width: 100px;
   height: 100px;
-  background: white;
-  font-size: 2em;
-  line-height: 100px;
+  background-color: #1e1e1e;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
   cursor: pointer;
-  border: 1px solid #ccc;
+  user-select: none;
+  border: 2px solid #333;
 }
-#players {
-  margin-top: 10px;
+.grid div.x {
+  color: #ff4c4c;
+}
+.grid div.o {
+  color: #4caeff;
+}
+
+/* Masquage */
+.hidden {
+  display: none;
+}
+
+/* Indication de tour */
+#turn {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
 }
