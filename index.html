@@ -2,36 +2,32 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Morpion 3 Modes</title>
+  <title>Morpion 3 modes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Morpion</h1>
-
-  <select id="mode">
-    <option value="bot">Contre le bot</option>
-    <option value="local">2 joueurs (local)</option>
-    <option value="lan">LAN (P2P)</option>
-  </select>
-
-  <div id="setup">
-    <input type="text" id="pseudo" placeholder="Ton pseudo (LAN)">
-    <select id="difficulty">
-      <option value="easy">Facile</option>
-      <option value="medium">Moyen</option>
-      <option value="hard">Difficile</option>
-    </select>
-    <button onclick="startGame()">Commencer</button>
+  <!-- Page d’accueil -->
+  <div id="home">
+    <h1>Morpion</h1>
+    <button onclick="startGame('bot')">Contre le Bot</button>
+    <button onclick="startGame('local')">2 Joueurs (Local)</button>
+    <button onclick="startGame('lan')">LAN (P2P)</button>
   </div>
 
-  <div id="players"></div>
+  <!-- Écran de jeu -->
+  <div id="game" class="hidden">
+    <div id="turn">Tour : <span id="currentPlayer">X</span></div>
+    <div id="grid" class="grid"></div>
+  </div>
 
-  <div id="game" class="grid"></div>
-
-  <button onclick="resetGame()">Rejouer</button>
+  <!-- Écran de fin -->
+  <div id="endScreen" class="hidden">
+    <h2 id="resultText"></h2>
+    <button onclick="resetGame()">Rejouer</button>
+    <button onclick="goHome()">Quitter</button>
+  </div>
 
   <script src="ai.js"></script>
-  <script src="local.js"></script>
   <script src="lan.js"></script>
   <script src="script.js"></script>
 </body>
