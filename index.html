@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Morpion 3 Modes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Morpion</h1>
+
+  <select id="mode">
+    <option value="bot">Contre le bot</option>
+    <option value="local">2 joueurs (local)</option>
+    <option value="lan">LAN (P2P)</option>
+  </select>
+
+  <div id="setup">
+    <input type="text" id="pseudo" placeholder="Ton pseudo (LAN)">
+    <select id="difficulty">
+      <option value="easy">Facile</option>
+      <option value="medium">Moyen</option>
+      <option value="hard">Difficile</option>
+    </select>
+    <button onclick="startGame()">Commencer</button>
+  </div>
+
+  <div id="players"></div>
+
+  <div id="game" class="grid"></div>
+
+  <button onclick="resetGame()">Rejouer</button>
+
+  <script src="ai.js"></script>
+  <script src="local.js"></script>
+  <script src="lan.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
