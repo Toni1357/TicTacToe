@@ -2,29 +2,70 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Morpion 3 modes</title>
+  <title>Morpion 3 Modes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Page d’accueil -->
   <div id="home">
     <h1>Morpion</h1>
-    <button onclick="startGame('bot')">Contre le Bot</button>
-    <button onclick="startGame('local')">2 Joueurs (Local)</button>
-    <button onclick="startGame('lan')">LAN (P2P)</button>
+    <div class="btn-group">
+      <button onclick="enterSetup('bot')">Contre le Bot</button>
+      <button onclick="enterSetup('local')">2 Joueurs (Local)</button>
+      <button onclick="enterSetup('lan')">LAN (P2P)</button>
+    </div>
+  </div>
+
+  <!-- Écran de configuration (choix pseudo ou difficulté) -->
+  <div id="setup" class="hidden">
+    <button class="close" onclick="goHome()">✕</button>
+    <div id="setup-bot" class="mode-setup">
+      <h2>Mode Bot</h2>
+      <label>
+        Difficulté :
+        <select id="difficulty">
+          <option value="easy">Facile</option>
+          <option value="medium">Moyen</option>
+          <option value="hard">Difficile</option>
+        </select>
+      </label>
+    </div>
+    <div id="setup-local" class="mode-setup hidden">
+      <h2>Mode Local</h2>
+      <p>2 joueurs sur le même écran</p>
+    </div>
+    <div id="setup-lan" class="mode-setup hidden">
+      <h2>Mode LAN (P2P)</h2>
+      <label>
+        Ton pseudo : <input type="text" id="lan-name" placeholder="Ex : Alice" />
+      </label>
+      <button onclick="startLAN()">Activer LAN</button>
+      <div id="lan-peers" class="hidden">
+        <h3>Joueurs détectés :</h3>
+        <ul id="peer-list"></ul>
+      </div>
+    </div>
+    <button class="start" onclick="startGame()">Démarrer</button>
   </div>
 
   <!-- Écran de jeu -->
   <div id="game" class="hidden">
-    <div id="turn">Tour : <span id="currentPlayer">X</span></div>
+    <button class="close" onclick="confirmQuit()">✕</button>
+    <div id="info">
+      <div id="role">Tu es : <span id="yourRole"></span></div>
+      <div id="turn">Tour de : <span id="currentPlayer"></span></div>
+    </div>
     <div id="grid" class="grid"></div>
   </div>
 
   <!-- Écran de fin -->
   <div id="endScreen" class="hidden">
+    <button class="close" onclick="confirmQuit()">✕</button>
     <h2 id="resultText"></h2>
-    <button onclick="resetGame()">Rejouer</button>
-    <button onclick="goHome()">Quitter</button>
+    <div class="btn-group">
+      <button onclick="resetGame()">Rejouer</button>
+      <button onclick="goHome()">Quitter</button>
+    </div>
   </div>
 
   <script src="ai.js"></script>
