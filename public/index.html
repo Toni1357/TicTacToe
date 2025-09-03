@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Morpion 3 Modes</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Morpion 3 modes</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Page d’accueil -->
+  <!-- Accueil -->
   <div id="home">
     <h1>Morpion</h1>
     <div class="btn-group">
@@ -16,13 +18,12 @@
     </div>
   </div>
 
-  <!-- Écran de configuration (choix pseudo ou difficulté) -->
+  <!-- Setup -->
   <div id="setup" class="hidden">
     <button class="close" onclick="goHome()">✕</button>
     <div id="setup-bot" class="mode-setup">
       <h2>Mode Bot</h2>
-      <label>
-        Difficulté :
+      <label>Difficulté :
         <select id="difficulty">
           <option value="easy">Facile</option>
           <option value="medium">Moyen</option>
@@ -32,14 +33,12 @@
     </div>
     <div id="setup-local" class="mode-setup hidden">
       <h2>Mode Local</h2>
-      <p>2 joueurs sur le même écran</p>
+      <p>Deux joueurs, même écran</p>
     </div>
     <div id="setup-lan" class="mode-setup hidden">
       <h2>Mode LAN (P2P)</h2>
-      <label>
-        Ton pseudo : <input type="text" id="lan-name" placeholder="Ex : Alice" />
-      </label>
-      <button onclick="startLAN()">Activer LAN</button>
+      <label>Ton pseudo : <input type="text" id="lan-name" placeholder="Alice" /></label>
+      <button onclick="startLAN()">Rejoindre le LAN</button>
       <div id="lan-peers" class="hidden">
         <h3>Joueurs détectés :</h3>
         <ul id="peer-list"></ul>
@@ -48,17 +47,17 @@
     <button class="start" onclick="startGame()">Démarrer</button>
   </div>
 
-  <!-- Écran de jeu -->
+  <!-- Jeu -->
   <div id="game" class="hidden">
     <button class="close" onclick="confirmQuit()">✕</button>
     <div id="info">
-      <div id="role">Tu es : <span id="yourRole"></span></div>
-      <div id="turn">Tour de : <span id="currentPlayer"></span></div>
+      <div>Tu es : <span id="yourRole"></span></div>
+      <div>Tour de : <span id="currentPlayer"></span></div>
     </div>
     <div id="grid" class="grid"></div>
   </div>
 
-  <!-- Écran de fin -->
+  <!-- Fin -->
   <div id="endScreen" class="hidden">
     <button class="close" onclick="confirmQuit()">✕</button>
     <h2 id="resultText"></h2>
@@ -71,5 +70,11 @@
   <script src="ai.js"></script>
   <script src="lan.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Enregistrement du service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </body>
 </html>
