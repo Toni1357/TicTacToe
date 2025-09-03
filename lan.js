@@ -1,47 +1,47 @@
 let peer, channel;
 
-function setupLAN(pseudo) {
+function setupLAN() {
   peer = new RTCPeerConnection();
   channel = peer.createDataChannel("game");
 
-  channel.onmessage = (e) => {
-    const move = JSON.parse(e.data);
-    board[move.index] = move.player;
-    updateBoard();
+  channel.onopen = () => console.log('P2P ouvert');
+  channel.onmessage = e => {
+    const { index, player } = JSON.parse(e.data);
+    board[index] = player;
+    updateGrid();
+    postMoveCheck(player);
   };
-
-  channel.onopen = () => console.log("Connexion P2P établie");
 
   peer.createOffer().then(offer => {
     peer.setLocalDescription(offer);
-    prompt("Copie cette offre et envoie-la à ton adversaire :", offer.sdp);
+    prompt("Copie cette offre SDP et envoie-la à ton adversaire :", offer.sdp);
   });
 }
 
 function receiveOffer(sdp) {
   peer = new RTCPeerConnection();
-  peer.ondatachannel = (e) => {
+  peer.ondatachannel = e => {
     channel = e.channel;
-    channel.onmessage = (e) => {
-      const move = JSON.parse(e.data);
-      board[move.index] = move.player;
-      updateBoard();
+    channel.onmessage = msgEvent => {
+      const { index, player } = JSON.parse(msgEvent.data);
+      board[index] = player;
+      updateGrid();
+      postMoveCheck(player);
     };
   };
-
-  peer.setRemoteDescription({ type: "offer", sdp });
+  peer.setRemoteDescription({ type: 'offer', sdp });
   peer.createAnswer().then(answer => {
     peer.setLocalDescription(answer);
-    prompt("Renvoie cette réponse à ton adversaire :", answer.sdp);
+    prompt("Copie cette réponse SDP et renvoie-la :", answer.sdp);
   });
 }
 
 function receiveAnswer(sdp) {
-  peer.setRemoteDescription({ type: "answer", sdp });
+  peer.setRemoteDescription({ type: 'answer', sdp });
 }
 
-function sendMove(index, player) {
-  if (channel && channel.readyState === "open") {
+function sendMoveLAN(index, player) {
+  if (channel && channel.readyState === 'open') {
     channel.send(JSON.stringify({ index, player }));
   }
 }
