@@ -1,47 +1,68 @@
-let peer, channel;
+let peer, channel, localName;
 
-function setupLAN() {
+function startLAN() {
+  localName = document.getElementById('lan-name').value.trim();
+  if(!localName) return alert('Entre un pseudo');
+  document.getElementById('peer-list').innerHTML = '';
+  document.getElementById('lan-peers').classList.remove('hidden');
+
+  // On se « découvre » mutuellement via signalisation manuelle QR/prompt
+  // Ici, on ne peut pas scanner automatiquement sans serveur
+  // On se positionne en hôte ou en client
+  let host = confirm('Tu es l’hôte ? OK = offrir, Annuler = rejoindre');
   peer = new RTCPeerConnection();
-  channel = peer.createDataChannel("game");
-
-  channel.onopen = () => console.log('P2P ouvert');
-  channel.onmessage = e => {
-    const { index, player } = JSON.parse(e.data);
-    board[index] = player;
-    updateGrid();
-    postMoveCheck(player);
-  };
-
-  peer.createOffer().then(offer => {
-    peer.setLocalDescription(offer);
-    prompt("Copie cette offre SDP et envoie-la à ton adversaire :", offer.sdp);
-  });
-}
-
-function receiveOffer(sdp) {
-  peer = new RTCPeerConnection();
-  peer.ondatachannel = e => {
-    channel = e.channel;
-    channel.onmessage = msgEvent => {
-      const { index, player } = JSON.parse(msgEvent.data);
-      board[index] = player;
-      updateGrid();
-      postMoveCheck(player);
-    };
-  };
-  peer.setRemoteDescription({ type: 'offer', sdp });
-  peer.createAnswer().then(answer => {
-    peer.setLocalDescription(answer);
-    prompt("Copie cette réponse SDP et renvoie-la :", answer.sdp);
-  });
-}
-
-function receiveAnswer(sdp) {
-  peer.setRemoteDescription({ type: 'answer', sdp });
-}
-
-function sendMoveLAN(index, player) {
-  if (channel && channel.readyState === 'open') {
-    channel.send(JSON.stringify({ index, player }));
+  if (host) {
+    channel = peer.createDataChannel('game');
+    setupChannel();
+    peer.createOffer().then(o=>{
+      peer.setLocalDescription(o);
+      prompt('Copie cette offre SDP à ton adversaire :', o.sdp);
+    });
+  } else {
+    let offer = prompt('Colle l’offre SDP reçue :');
+    peer.ondatachannel = e=>{ channel=e.channel; setupChannel(); };
+    peer.setRemoteDescription({ type:'offer', sdp:offer });
+    peer.createAnswer().then(a=>{
+      peer.setLocalDescription(a);
+      prompt('Renvoie cette réponse SDP à ton hôte :', a.sdp);
+    });
   }
+}
+
+function setupChannel() {
+  channel.onopen = ()=>addPeer(localName, true);
+  channel.onmessage = e=>{
+    let msg=JSON.parse(e.data);
+    if(msg.type==='join-request') {
+      addPeer(msg.name, false);
+    } else if(msg.type==='move') {
+      onPeerMove(msg.index, msg.player);
+    }
+  };
+}
+
+// Affiche un nouveau peer
+function addPeer(name, isSelf) {
+  if (isSelf) return; // on ignore soi-même
+  const ul = document.getElementById('peer-list');
+  ul.innerHTML = `<li>
+    ${name} 
+    <button onclick="requestGame('${name}')">Jouer</button>
+  </li>`;
+}
+
+// Envoi demande de partie
+function requestGame(name) {
+  channel.send(JSON.stringify({ type:'join-request', name:localName }));
+  startGame('lan');
+}
+
+// Envoi coup
+function sendLAN(index, player) {
+  channel.send(JSON.stringify({ type:'move', index, player }));
+}
+
+function onPeerMove(index, player) {
+  // hook dans script.js
+  handleRemoteMove(index, player);
 }
