@@ -1,0 +1,24 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #f0f0f0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 5px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.grid div {
+  width: 100px;
+  height: 100px;
+  background: white;
+  font-size: 2em;
+  line-height: 100px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+#players {
+  margin-top: 10px;
+}
